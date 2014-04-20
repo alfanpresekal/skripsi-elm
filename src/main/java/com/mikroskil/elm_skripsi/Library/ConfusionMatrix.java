@@ -89,20 +89,50 @@ public class ConfusionMatrix {
     private void countPrecision(){
         int devider;
         devider = (confMatrix[NAIK][CTO]==0)?1:confMatrix[NAIK][CTO];
-        PresisiNaik = confMatrix[NAIK][NAIK]/devider;
+        PresisiNaik = ((double)confMatrix[NAIK][NAIK]/devider)*100;
         devider = (confMatrix[TETAP][CTO]==0)?1:confMatrix[TETAP][CTO];
-        PresisiTetap = confMatrix[TETAP][TETAP]/devider;
+        PresisiTetap = ((double)confMatrix[TETAP][TETAP]/devider)*100;
         devider = (confMatrix[TURUN][CTO]==0)?1:confMatrix[TURUN][CTO];
-        PresisiTurun = confMatrix[TURUN][TURUN]/confMatrix[TURUN][CTO];
+        PresisiTurun = ((double)confMatrix[TURUN][TURUN]/devider)*100;
     }
     
     private void countRecall(){
         int devider;
-        devider = (confMatrix[NAIK][CTO]==0)?1:confMatrix[CTO][NAIK];
-        recallNaik = confMatrix[NAIK][NAIK]/devider;
-        devider = (confMatrix[TETAP][CTO]==0)?1:confMatrix[CTO][TETAP];
-        recallTetap = confMatrix[TETAP][TETAP]/devider;
-        devider = (confMatrix[TURUN][CTO]==0)?1:confMatrix[CTO][TURUN];
-        recallTurun = confMatrix[TURUN][TURUN]/devider;
+        devider = (confMatrix[CTO][NAIK]==0)?1:confMatrix[CTO][NAIK];
+        recallNaik = ((double)confMatrix[NAIK][NAIK]/devider)*100;
+        devider = (confMatrix[CTO][TETAP]==0)?1:confMatrix[CTO][TETAP];
+        recallTetap = ((double)confMatrix[TETAP][TETAP]/devider)*100;
+        devider = (confMatrix[CTO][TURUN]==0)?1:confMatrix[CTO][TURUN];
+        recallTurun = ((double)confMatrix[TURUN][TURUN]/devider)*100;
     }
+
+    public double getRecallNaik() {
+        return recallNaik;
+    }
+
+    public double getRecallTetap() {
+        return recallTetap;
+    }
+
+    public double getRecallTurun() {
+        return recallTurun;
+    }
+
+    public double getPresisiNaik() {
+        return PresisiNaik;
+    }
+
+    public double getPresisiTetap() {
+        return PresisiTetap;
+    }
+
+    public double getPresisiTurun() {
+        return PresisiTurun;
+    }
+
+    public double getAccuracy() {
+        return Accuracy;
+    }
+    
+    
 }

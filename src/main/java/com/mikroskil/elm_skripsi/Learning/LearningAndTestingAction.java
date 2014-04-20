@@ -69,6 +69,8 @@ public class LearningAndTestingAction {
         fetchData();
         trainData();
         getOutput();
+        ((LearningAndTesting)owner).setPresisiAndRecall(confMatrix.getPresisiNaik(), confMatrix.getPresisiTetap(), confMatrix.getPresisiTurun(), confMatrix.getRecallNaik(), confMatrix.getRecallTetap(), confMatrix.getRecallTurun());
+        ((LearningAndTesting)owner).setAccuracy(confMatrix.getAccuracy());
     }
     
     public void trainData(){
@@ -97,7 +99,6 @@ public class LearningAndTestingAction {
     public void fillTable(){
         fetchResult();
         ((LearningAndTesting)owner).fillResultTable(new ResultTableModel());
-        ((LearningAndTesting)owner).fillRealTable(new ResultRealTableModel());
     }
     
     private void fetchResult(){
@@ -412,40 +413,17 @@ public class LearningAndTestingAction {
         }
 
         public int getColumnCount() {
-            return 4;
+            return 3;
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
             Result temp = showResult.get(rowIndex);
+            Result real = realResult.get(rowIndex);
             switch(columnIndex)
             {
                 case 0 : return temp.getDate();
                 case 1 : return temp.getResult();
-                case 2 : return temp.getReal();
-                case 3 : return temp.getPredicted();
-                default : return "invalid index";
-            }
-        }
-        
-    }
-    private class ResultRealTableModel extends AbstractTableModel{
-
-        public int getRowCount() {
-            return realResult.size();
-        }
-
-        public int getColumnCount() {
-            return 4;
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Result temp = realResult.get(rowIndex);
-            switch(columnIndex)
-            {
-                case 0 : return temp.getDate();
-                case 1 : return temp.getResult();
-                case 2 : return temp.getReal();
-                case 3 : return temp.getPredicted();
+                case 2 : return real.getResult();
                 default : return "invalid index";
             }
         }
