@@ -6,6 +6,8 @@
 
 package com.mikroskil.elm_skripsi;
 
+import com.mikroskil.elm_skripsi.Learning.LearningPage;
+import com.mikroskil.elm_skripsi.Learning.TestingPage;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendFinishPage;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendPage;
 import com.mikroskil.elm_skripsi.delete.DeleteDialog;
@@ -50,6 +52,8 @@ public class Main extends javax.swing.JFrame {
         mnuExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        mnuTesting = new javax.swing.JMenuItem();
+        mnuPrediksi = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -96,13 +100,24 @@ public class Main extends javax.swing.JFrame {
 
         jMenu2.setText("Proses");
 
-        jMenuItem1.setText("Learning and Testing");
+        jMenuItem1.setText("Learning");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
         jMenu2.add(jMenuItem1);
+
+        mnuTesting.setText("Testing");
+        mnuTesting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuTestingActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mnuTesting);
+
+        mnuPrediksi.setText("Prediksi");
+        jMenu2.add(mnuPrediksi);
 
         jMenuBar1.add(jMenu2);
 
@@ -147,9 +162,14 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuExitActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        com.mikroskil.elm_skripsi.Learning.LearningAndTesting  main = new com.mikroskil.elm_skripsi.Learning.LearningAndTesting(this,true);
+        LearningPage  main = new LearningPage(this,true);
         main.show();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void mnuTestingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTestingActionPerformed
+        TestingPage main = new TestingPage(this, true);
+        main.show();
+    }//GEN-LAST:event_mnuTestingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -206,5 +226,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuDeleteData;
     private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenuItem mnuImportData;
+    private javax.swing.JMenuItem mnuPrediksi;
+    private javax.swing.JMenuItem mnuTesting;
     // End of variables declaration//GEN-END:variables
 }

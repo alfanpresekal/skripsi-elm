@@ -15,8 +15,9 @@ import java.util.ArrayList;
  */
 public class ConfusionMatrix {
     private final int NAIK = 0,TETAP=1,TURUN=2,CTO=3;
-    private int[][] confMatrix = new int[4][4];
+    private final int[][] confMatrix = new int[4][4];
     private double recallNaik,recallTetap,recallTurun,PresisiNaik,PresisiTetap,PresisiTurun,Accuracy;
+    private int amountNaik,amountTurun,amountTetap;
     
     public ConfusionMatrix(){
         nullifyConfMatrix();
@@ -50,6 +51,7 @@ public class ConfusionMatrix {
         countAccuracy();
         countPrecision();
         countRecall();
+        countAmount();
     }
     
     private int getHooker(int result){
@@ -133,6 +135,30 @@ public class ConfusionMatrix {
     public double getAccuracy() {
         return Accuracy;
     }
+
+    public int getAmountNaik() {
+        return amountNaik;
+    }
+
+    public int getAmountTurun() {
+        return amountTurun;
+    }
+
+    public int getAmountTetap() {
+        return amountTetap;
+    }
     
-    
+    public void countAmount(){
+        amountNaik =0;amountTetap=0;amountTurun=0;
+        for(int i=0;i<confMatrix.length;i++){
+            for(int j=0;j<confMatrix[i].length;j++){
+                if(i==NAIK)
+                    amountNaik += confMatrix[i][j];
+                else if(i==TURUN)
+                    amountTurun += confMatrix[i][j];
+                else
+                    amountTetap += confMatrix[i][j];
+            }
+        }
+    }
 }

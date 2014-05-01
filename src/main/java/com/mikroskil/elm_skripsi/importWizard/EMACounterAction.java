@@ -98,6 +98,7 @@ public class EMACounterAction extends PageAction {
             return 8;
         }
         
+        @Override
         public String getColumnName(int column){
             return columnNames[column];
         }

@@ -38,9 +38,9 @@ public class Result {
     public String getResult() {
         switch(result)
         {
-            case 1 : return "Naik";
-            case -1 : return "Turun";
-            case 0 : return "Tetap";
+            case NAIK : return "Naik";
+            case TURUN : return "Turun";
+            case TETAP : return "Tetap";
             default : return "Invalid";
         }
     }
