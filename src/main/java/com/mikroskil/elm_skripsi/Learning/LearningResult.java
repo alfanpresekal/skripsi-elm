@@ -14,32 +14,22 @@ import no.uib.cipr.matrix.DenseMatrix;
  */
 public class LearningResult {
     
-    private DenseMatrix inputWeight;
-    private DenseMatrix biasOfHiddenNeurons;
+    private int seed;
     private double accuracy;
 
-    public LearningResult(DenseMatrix inputWeight, DenseMatrix biasOfHiddenNeurons,double accuracy) {
-        this.inputWeight = inputWeight;
-        this.biasOfHiddenNeurons = biasOfHiddenNeurons;
+    public LearningResult(int seed,double accuracy) {
+        this.seed = seed;
         this.accuracy = accuracy;
     }
-    
-    public DenseMatrix getInputWeight() {
-        return inputWeight;
+
+    public int getSeed() {
+        return seed;
     }
 
-    public void setInputWeight(DenseMatrix inputWeight) {
-        this.inputWeight = inputWeight;
+    public void setSeed(int seed) {
+        this.seed = seed;
     }
-
-    public DenseMatrix getBiasOfHiddenNeurons() {
-        return biasOfHiddenNeurons;
-    }
-
-    public void setBiasOfHiddenNeurons(DenseMatrix biasOfHiddenNeurons) {
-        this.biasOfHiddenNeurons = biasOfHiddenNeurons;
-    }
-
+   
     public double getAccuracy() {
         return accuracy;
     }

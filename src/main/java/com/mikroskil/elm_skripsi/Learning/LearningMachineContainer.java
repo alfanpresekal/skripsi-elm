@@ -8,7 +8,6 @@ package com.mikroskil.elm_skripsi.Learning;
 
 import com.mikroskil.elm_skripsi.model.LearningDataResult;
 import java.util.ArrayList;
-import sun.security.jca.GetInstance;
 
 
 /**

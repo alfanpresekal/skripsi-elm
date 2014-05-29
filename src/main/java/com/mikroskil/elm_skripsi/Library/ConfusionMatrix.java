@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author Andy Wijaya
  */
 public class ConfusionMatrix {
-    private final int NAIK = 0,TETAP=1,TURUN=2,CTO=3;
+    public static final int NAIK = 0,TETAP=1,TURUN=2,CTO=3;
     private final int[][] confMatrix = new int[4][4];
     private double recallNaik,recallTetap,recallTurun,PresisiNaik,PresisiTetap,PresisiTurun,Accuracy;
     private int amountNaik,amountTurun,amountTetap;
@@ -137,15 +137,15 @@ public class ConfusionMatrix {
     }
 
     public int getAmountNaik() {
-        return amountNaik;
+        return confMatrix[NAIK][CTO];
     }
 
     public int getAmountTurun() {
-        return amountTurun;
+        return confMatrix[TURUN][CTO];
     }
 
     public int getAmountTetap() {
-        return amountTetap;
+        return confMatrix[TETAP][CTO];
     }
     
     public void countAmount(){
@@ -161,4 +161,10 @@ public class ConfusionMatrix {
             }
         }
     }
+
+    public int[][] getConfMatrix() {
+        return confMatrix;
+    }
+    
+    
 }

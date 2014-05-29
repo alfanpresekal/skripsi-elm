@@ -8,10 +8,8 @@ package com.mikroskil.elm_skripsi.importWizard;
 
 import com.mikroskil.elm_skripsi.model.Record;
 import com.mikroskil.elm_skripsi.model.Share;
-import com.mikroskil.elm_skripsi.wizard.LoadingDialog;
 import com.mikroskil.elm_skripsi.wizard.PageAction;
 import com.mikroskil.elm_skripsi.wizard.WizardPage;
-import java.awt.Frame;
 import java.text.SimpleDateFormat;
 import javax.swing.table.AbstractTableModel;
 
@@ -40,29 +38,12 @@ public class EMACounterAction extends PageAction {
 
     @Override
     public boolean initialize() {
-        int max = share.getRecords().size()*3+40;
-        final LoadingDialog loading = new LoadingDialog((Frame) getOwner().getParent(), true, max);
-        
-        Thread thread = new Thread(new Runnable(){
-
-            public void run() {
-                loading.show();
-            }
-            
-        });
-        
-        thread.start();
-        
-        loading.setMessage("Menghitung EMA5");
         share.countEMA5();
         
-        loading.setMessage("Menghitung EMA10");
         share.countEMA10();
         
-        loading.setMessage("Menghitung EMA20");
         share.countEMA20();
         
-        loading.dispose();
         share.setJumlahData(share.getRecords().size());
         share.setHighestLowest();
         ((EMACounterPage)getOwner()).setTableModel(new RecordTableModel());

@@ -13,6 +13,7 @@ import com.mikroskil.elm_skripsi.model.Record;
 import com.mikroskil.elm_skripsi.model.Result;
 import com.mikroskil.elm_skripsi.model.Share;
 import com.mikroskil.elm_skripsi.model.ShareContainer;
+import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -90,14 +91,23 @@ public class TestingAction {
             choosen.readRecords(Share.REAL);
             choosen.readRecords(Share.NORM);
             choosen.setHighestLowest();
-            setTestSetBeginYear();
+            setTestBeginMonth();
         }
         else{
             JOptionPane.showMessageDialog(this.owner,"Kode Saham Belum di learning");
         }
     }
     
-    private void setTestSetBeginYear(){
+    private void setTestBeginMonth(){
+        getOwner().getCmbBulanTestAwal().setEnabled(true);
+        getOwner().fillCmbBulanTestAwal(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
+    }
+    
+    public void setTestSetBeginYear(String month){
+        if(month.equalsIgnoreCase("-pilih-")){
+            return;
+        }
+        testSetBeginMonth = getIntegerBulan(month);
         LearningMachineContainer temp = LearningMachineContainer.getInstance();
         LearningDataResult isExists = CollectionUtils.find(
                 temp.getLearningDataResult(), 
@@ -108,8 +118,7 @@ public class TestingAction {
                 }
         );
         getOwner().getCmbTahunTestAwal().setEnabled(true);
-        int startYear = isExists.getEndYear();
-        
+        int startYear = isExists.getEndYear()+1;
         Calendar tempCal = Calendar.getInstance();
         tempCal.setTime(choosen.getEndDate());
         
@@ -122,16 +131,26 @@ public class TestingAction {
         years.add(0,"-Pilih-");
         getOwner().fillCmbTahunTestAwal(new MultiComboBoxModel(years));
     }
-        
-    public void setEndYearTest(String year){
+    
+    public void setTestSetEndMonth(String year){
         if(year.equalsIgnoreCase("-pilih-")){
             return;
         }
-        getOwner().getCmbTahunTestAkhir().setEnabled(true);
         testSetBeginYear = Integer.parseInt(year);
+        getOwner().getCmbBulanTestAkhir().setEnabled(true);
+        getOwner().fillCmbBulanTestAkhir(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
+    }
+    
+    public void setEndYearTest(String month){
+        if(month.equalsIgnoreCase("-pilih-")){
+            return;
+        }
+        getOwner().getCmbTahunTestAkhir().setEnabled(true);
+        
+        testSetEndMonth = getIntegerBulan(month);
         
         Calendar temp = Calendar.getInstance();
-        int startYear = Integer.parseInt(year);
+        int startYear = testSetBeginYear;
         temp.setTime(choosen.getEndDate());
         int endYear = temp.get(Calendar.YEAR);
         
@@ -144,37 +163,11 @@ public class TestingAction {
         
     }
     
-    public void setTestSetBeginMonth(String year){
+    public void setEndYear(String year){
         if(year.equalsIgnoreCase("-pilih-")){
             return;
         }
         testSetEndYear = Integer.parseInt(year);
-        getOwner().getCmbBulanTestAwal().setEnabled(true);
-        getOwner().fillCmbBulanTestAwal(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
-    }
-    
-    public void setTestSetEndMonth(String month){
-        if(month.equalsIgnoreCase("-pilih-")){
-            return;
-        }
-        
-        int index = testSetBeginMonth = getIntegerBulan(month);
-        
-        getOwner().getCmbBulanTestAkhir().setEnabled(true);
-        ArrayList<String> temp = new ArrayList<String>();
-        for(int i=index; i<months.length;i++){
-            temp.add(months[i]);
-        }
-        temp.add(0,"-Pilih-");
-        getOwner().fillCmbBulanTestAkhir(new MultiComboBoxModel(temp));
-    }
-    
-    public void setEndMonth(String month){
-        if(month.equalsIgnoreCase("-pilih-")){
-            return;
-        }
-        int index = testSetEndMonth = getIntegerBulan(month);
-        
     }
     
     public int getIntegerBulan(String month){
@@ -197,10 +190,14 @@ public class TestingAction {
            public boolean evaluate(Record t) {
                 Calendar temp = Calendar.getInstance();
                 temp.setTime(t.getDate());
-                if(temp.get(Calendar.YEAR)>=testSetBeginYear && temp.get(Calendar.YEAR)<=testSetEndYear)
-                    if(temp.get(Calendar.MONTH)>= testSetBeginMonth-1 && temp.get(Calendar.MONTH)<=testSetEndMonth-1)
-                        return true;
-                return false;
+                
+                Calendar startDate = Calendar.getInstance();
+                startDate.set(testSetBeginYear, testSetBeginMonth-1, 0);
+                
+                Calendar endDate = Calendar.getInstance();
+                endDate.set(testSetEndYear, testSetEndMonth-1,31);
+                
+                return (temp.compareTo(startDate) >= 0 && temp.compareTo(endDate) <= 0);
             }          
         }));
         test_set.setRecords(temp);
@@ -209,10 +206,13 @@ public class TestingAction {
             public boolean evaluate(Record t) {
                 Calendar temp = Calendar.getInstance();
                 temp.setTime(t.getDate());
-                if(temp.get(Calendar.YEAR)>=testSetBeginYear && temp.get(Calendar.YEAR)<=testSetEndYear)
-                    if(temp.get(Calendar.MONTH)>= testSetBeginMonth-1 && temp.get(Calendar.MONTH)<=testSetEndMonth-1)
-                        return true;
-                return false;
+                Calendar startDate = Calendar.getInstance();
+                startDate.set(testSetBeginYear, testSetBeginMonth-1, 0);
+                
+                Calendar endDate = Calendar.getInstance();
+                endDate.set(testSetEndYear, testSetEndMonth-1,31);
+                
+                return (temp.compareTo(startDate) >= 0 && temp.compareTo(endDate) <= 0);
             }       
         }));
         test_set.setNormRecords(temp);
@@ -224,9 +224,10 @@ public class TestingAction {
         fillTable();
         getOwner().setPresisiAndRecall(confMatrix.getPresisiNaik(), confMatrix.getPresisiTetap(), confMatrix.getPresisiTurun(), confMatrix.getRecallNaik(), confMatrix.getRecallTetap(), confMatrix.getRecallTurun());
         getOwner().setAccuracy(confMatrix.getAccuracy());
+        getOwner().setJumlah(confMatrix.getAmountNaik(),confMatrix.getAmountTetap(),confMatrix.getAmountTurun());
     }
     
-     public void deNormalizeData(){
+    public void deNormalizeData(){
         results_denorm = new double[results.length];
         choosen.setHighestLowest();
         double highestClose = choosen.getHighestClose(), lowestClose = choosen.getLowestClose();
@@ -275,6 +276,11 @@ public class TestingAction {
             realResult.add(t);
         }
         confMatrix.count(realResult, showResult);
+    }
+    
+    public void showDetail(){
+        ConfMatrixDetail cm = new ConfMatrixDetail((Frame)this.getOwner().getParent(),true, confMatrix);
+        cm.show();
     }
     
     private class KodeSahamModel extends AbstractListModel implements ComboBoxModel{

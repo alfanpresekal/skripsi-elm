@@ -6,19 +6,29 @@
 
 package com.mikroskil.elm_skripsi.Learning;
 
+import javax.swing.ComboBoxModel;
+
 /**
  *
  * @author Andy Wijaya
  */
 public class Predict extends javax.swing.JDialog {
     
-    
+    PredictAction pageAction;
     /**
      * Creates new form Predict
      */
     public Predict(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
+        pageAction = new PredictAction(this);
+        pageAction.initialize();;
+    }
+    
+    
+    public void fillCmbKodeSaham(ComboBoxModel model){
+        cmbKodeSaham.setModel(model);
     }
 
     /**
@@ -30,32 +40,14 @@ public class Predict extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel6 = new javax.swing.JLabel();
-        cmbBulanTrainAkhir = new javax.swing.JComboBox();
         cmbKodeSaham = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
-        cmbBulanTrainAwal = new javax.swing.JComboBox();
-        jLabel4 = new javax.swing.JLabel();
-        cmbTahunTrainAwal = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        cmbTahunTrainAkhir = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
+        lblResult = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
         btnProcess = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel6.setText("-");
-
-        cmbBulanTrainAkhir.setEnabled(false);
-        cmbBulanTrainAkhir.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbBulanTrainAkhirItemStateChanged(evt);
-            }
-        });
 
         cmbKodeSaham.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -65,40 +57,13 @@ public class Predict extends javax.swing.JDialog {
 
         jLabel1.setText("Kode Saham");
 
-        cmbBulanTrainAwal.setEnabled(false);
-        cmbBulanTrainAwal.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbBulanTrainAwalItemStateChanged(evt);
-            }
-        });
-
-        jLabel4.setText("-");
-
-        cmbTahunTrainAwal.setEnabled(false);
-        cmbTahunTrainAwal.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbTahunTrainAwalItemStateChanged(evt);
-            }
-        });
-
-        jLabel3.setText("Tahun");
-
-        jLabel2.setText("Training Set : ");
-
-        jLabel5.setText("Bulan");
-
-        cmbTahunTrainAkhir.setEnabled(false);
-        cmbTahunTrainAkhir.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbTahunTrainAkhirItemStateChanged(evt);
-            }
-        });
-
         jPanel1.setBackground(new java.awt.Color(102, 255, 102));
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("NAIK");
+        lblResult.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        lblResult.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblResult.setText("Result");
+        lblResult.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        lblResult.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -106,20 +71,25 @@ public class Predict extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addComponent(lblResult, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         btnCancel.setText("Cancel");
 
         btnProcess.setText("Process");
+        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,93 +100,47 @@ public class Predict extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmbTahunTrainAwal, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cmbTahunTrainAkhir, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(70, 70, 70)
-                                .addComponent(cmbKodeSaham, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmbBulanTrainAwal, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cmbBulanTrainAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel1)
+                        .addGap(70, 70, 70)
+                        .addComponent(cmbKodeSaham, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 267, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnProcess)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(5, 5, 5)
                         .addComponent(btnCancel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbBulanTrainAwal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)
-                            .addComponent(cmbBulanTrainAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(cmbKodeSaham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbTahunTrainAwal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(cmbTahunTrainAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbKodeSaham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel)
-                    .addComponent(btnProcess))
+                    .addComponent(btnProcess)
+                    .addComponent(btnCancel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmbBulanTrainAkhirItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbBulanTrainAkhirItemStateChanged
-        //pageAction.setStartMonthTest((String)evt.getItem());
-    }//GEN-LAST:event_cmbBulanTrainAkhirItemStateChanged
-
     private void cmbKodeSahamItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbKodeSahamItemStateChanged
-        //pageAction.setChoosen((String)evt.getItem());
+        pageAction.setChoosen((String)evt.getItem());
     }//GEN-LAST:event_cmbKodeSahamItemStateChanged
 
-    private void cmbBulanTrainAwalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbBulanTrainAwalItemStateChanged
-        //pageAction.setEndMonthTrain((String)evt.getItem());
-    }//GEN-LAST:event_cmbBulanTrainAwalItemStateChanged
+    private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
+        pageAction.doPredict();
+    }//GEN-LAST:event_btnProcessActionPerformed
 
-    private void cmbTahunTrainAwalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTahunTrainAwalItemStateChanged
-        //pageAction.setEndYearTrain((String)evt.getItem());
-    }//GEN-LAST:event_cmbTahunTrainAwalItemStateChanged
-
-    private void cmbTahunTrainAkhirItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbTahunTrainAkhirItemStateChanged
-       // pageAction.setStartYearTest((String)evt.getItem());
-    }//GEN-LAST:event_cmbTahunTrainAkhirItemStateChanged
-
+    public void fillLabelResult(String result){
+        lblResult.setText(result);
+    }
     /**
      * @param args the command line arguments
      */
@@ -262,18 +186,9 @@ public class Predict extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnProcess;
-    private javax.swing.JComboBox cmbBulanTrainAkhir;
-    private javax.swing.JComboBox cmbBulanTrainAwal;
     private javax.swing.JComboBox cmbKodeSaham;
-    private javax.swing.JComboBox cmbTahunTrainAkhir;
-    private javax.swing.JComboBox cmbTahunTrainAwal;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblResult;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,16 +10,12 @@ import com.mikroskil.elm_skripsi.model.Record;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Random;
 import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.Matrices;
 import no.uib.cipr.matrix.NotConvergedException;
 
 /**
@@ -53,8 +49,9 @@ public class LearningMachine {
         
         private DenseMatrix firstInputWeight, firstBiasofHiddenNeurons;
         
-        private boolean isRandom;
-	/**
+        private int seed;
+        private Random rand;
+        /**
      * Construct an ELM
      * @param
      * elm_type              - 0 for regression; 1 for (both binary and multi-classes) classification
@@ -70,7 +67,7 @@ public class LearningMachine {
      * @throws NotConvergedException
      */
 
-	public LearningMachine(int elm_type, boolean isRandom, String ActivationFunction){
+	public LearningMachine(int elm_type, int seed, String ActivationFunction){
 
 
 
@@ -84,7 +81,10 @@ public class LearningMachine {
 		TestingAccuracy = 0;
 		NumberofOutputNeurons = 1;
                 
-                this.isRandom = isRandom;
+                this.seed = seed;
+                        
+                rand = new Random(seed);
+                
 	}
         
 	public LearningMachine(){}
@@ -143,7 +143,7 @@ public class LearningMachine {
 	private void train() throws NotConvergedException{
 
 		numTrainData = train_set.numRows();
-		NumberofInputNeurons = train_set.numColumns() - 1;
+		NumberofInputNeurons = train_set.numColumns()-1;
 		InputWeight = fetchInputWeight();
 
 		DenseMatrix transT = new DenseMatrix(numTrainData, 1);
@@ -158,7 +158,13 @@ public class LearningMachine {
 		DenseMatrix P = new DenseMatrix(NumberofInputNeurons,numTrainData);
 		transT.transpose(T);
 		transP.transpose(P);
-
+                for(int i=0;i<transP.numRows();i++){
+                    for(int j=0;j<transP.numColumns();j++){
+                        System.out.print(transP.get(i,j)+" ");
+                    }
+                    System.out.println();
+                }
+                
 		if(Elm_Type != 0)	//CLASSIFIER
 		{
 			label = new int[NumberofOutputNeurons];
@@ -558,77 +564,23 @@ public class LearningMachine {
 	}
         
         private DenseMatrix fetchInputWeight(){
-            if(isRandom){
-                firstInputWeight = (DenseMatrix) Matrices.random(NumberofHiddenNeurons, NumberofInputNeurons);
-                return firstInputWeight;
-            }
-            else{
-                File file = new File("./config/inputweight.txt");
-                if(file.exists()){
-                    try {
-                        String line="";
-                        Scanner scanner = new Scanner(file);
-                        while(scanner.hasNextLine()){
-                            line = scanner.nextLine();
-                        }
-                        String[] lines = line.split(",");
-                        double[] temp = new double[lines.length];
-                        for(int i=0;i<lines.length;i++){
-                            temp[i] = Double.parseDouble(lines[i]);
-                        }
-                        DenseMatrix result = new DenseMatrix(NumberofHiddenNeurons, NumberofInputNeurons);
-                        int k=0;
-                        for(int i=0;i<NumberofHiddenNeurons;i++){
-                            for(int j=0;j<NumberofInputNeurons;j++){
-                                result.set(i, j,temp[k]);
-                                k++;
-                            }
-                        }
-                        return result;
-                    } catch (IOException ex) {
-                        Logger.getLogger(LearningMachine.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            double[][] tempIW = new double[NumberofHiddenNeurons][NumberofInputNeurons];
+            for(int i=0;i<NumberofHiddenNeurons;i++){
+                for(int j=0;j<NumberofInputNeurons;j++){
+                    tempIW[i][j] = rand.nextDouble();
                 }
-                return null;
             }
+            return new DenseMatrix(tempIW);
         }
         
         private DenseMatrix fetchBiasofHiddenNeurons(){
-            if(isRandom){
-                firstBiasofHiddenNeurons = (DenseMatrix) Matrices.random(NumberofHiddenNeurons, 1);
-                return firstBiasofHiddenNeurons;
-            }
-            else{
-                File file = new File("./config/bias.txt");
-                if(file.exists()){
-                    try {
-                        String line="";
-                        Scanner br = new Scanner(file);
-                        while(br.hasNextLine()){
-                            line+=br.nextLine();
-                        }
-                        String[] lines = line.split(",");
-                        double[] temp = new double[lines.length];
-                        for(int i=0;i<lines.length;i++){
-                            temp[i] = Double.parseDouble(lines[i]);
-                        }
-                        DenseMatrix result = new DenseMatrix(NumberofHiddenNeurons, 1);
-                        int k=0;
-                        for(int i=0;i<NumberofHiddenNeurons;i++){
-                            for(int j=0;j<1;j++){
-                                result.set(i, j,temp[k]);
-                                k++;
-                            }
-                        }
-                        return result;
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(LearningMachine.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(LearningMachine.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            double[][] tempBHN = new double[NumberofHiddenNeurons][1];
+            for(int i=0;i<NumberofHiddenNeurons;i++){
+                for(int j=0;j<1;j++){
+                    tempBHN[i][j]=rand.nextDouble();
                 }
-                return null;
             }
+            return new DenseMatrix(tempBHN);
         }
 
         public DenseMatrix getFirstInputWeight() {
@@ -638,8 +590,11 @@ public class LearningMachine {
         public DenseMatrix getFirstBiasofHiddenNeurons() {
             return firstBiasofHiddenNeurons;
         }
+
+        public int getSeed() {
+            return seed;
+        }
         
-       
 	//for predicting a data file based on a trained model.
 	public void testgetoutput(String filename) throws IOException {
 

@@ -7,6 +7,7 @@
 package com.mikroskil.elm_skripsi;
 
 import com.mikroskil.elm_skripsi.Learning.LearningPage;
+import com.mikroskil.elm_skripsi.Learning.Predict;
 import com.mikroskil.elm_skripsi.Learning.TestingPage;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendFinishPage;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendPage;
@@ -53,7 +54,6 @@ public class Main extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         mnuTesting = new javax.swing.JMenuItem();
-        mnuPrediksi = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -100,7 +100,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenu2.setText("Proses");
 
-        jMenuItem1.setText("Learning");
+        jMenuItem1.setText("Training");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -115,9 +115,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jMenu2.add(mnuTesting);
-
-        mnuPrediksi.setText("Prediksi");
-        jMenu2.add(mnuPrediksi);
 
         jMenuBar1.add(jMenu2);
 
@@ -226,7 +223,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuDeleteData;
     private javax.swing.JMenuItem mnuExit;
     private javax.swing.JMenuItem mnuImportData;
-    private javax.swing.JMenuItem mnuPrediksi;
     private javax.swing.JMenuItem mnuTesting;
     // End of variables declaration//GEN-END:variables
 }

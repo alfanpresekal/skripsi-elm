@@ -15,6 +15,7 @@ import com.mikroskil.elm_skripsi.model.Share;
 import com.mikroskil.elm_skripsi.model.ShareContainer;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
@@ -47,7 +47,7 @@ public class LearningAction {
     private final String[] months = {
         "-Pilih-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"
     };
-    ConfusionMatrix confMatrix = new ConfusionMatrix();
+    ConfusionMatrix confMatrix;
     
     int trainSetStartYear,trainSetEndYear,trainSetStartMonth,trainSetEndMonth;
     Share train_set = new Share("train_set",""),test_set = new Share("test_set","");
@@ -81,7 +81,6 @@ public class LearningAction {
         if(kodeSaham.equalsIgnoreCase("-Pilih-")){  
             return;
         }
-        getOwner().getCmbTahunTrainAwal().setEnabled(true);
         choosen = CollectionUtils.find(shareContainer.getShare(), new Predicate<Share>(){
            public boolean evaluate(Share t){
                return t.getKodeSaham().equalsIgnoreCase(kodeSaham);
@@ -91,10 +90,27 @@ public class LearningAction {
         choosen.readRecords(Share.REAL);
         choosen.readRecords(Share.NORM);
         choosen.setHighestLowest();
-        setTrainSetBeginYear();
+        setTrainSetBeginMonth();
     }
     
-    public void setTrainSetBeginYear(){
+    public void setTrainSetBeginMonth(){
+        getOwner().getCmbBulanTrainAwal().setEnabled(true);
+        getOwner().fillBulanAwalTrain(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
+//        if(year.equalsIgnoreCase("-Pilih-")){
+//            return;
+//        }
+//        trainSetEndYear = Integer.parseInt(year);
+//        getOwner().getCmbBulanTrainAwal().setEnabled(true);
+//        getOwner().fillBulanAwalTrain(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
+    }
+    
+    public void setTrainSetBeginYear(String month){
+        if(month.equalsIgnoreCase("-pilih-")){
+            return;
+        }
+        getOwner().getCmbTahunTrainAwal().setEnabled(true);
+        trainSetStartMonth = getIntegerBulan(month);
+        
         Calendar temp = Calendar.getInstance();
         temp.setTime(choosen.getStartDate());
         int startYear = temp.get(Calendar.YEAR);
@@ -109,15 +125,27 @@ public class LearningAction {
         getOwner().fillTahunAwalTrain(new MultiComboBoxModel(years));
     }
     
-    public void setTrainSetEndYear(String year){
-        if(year.equalsIgnoreCase("-Pilih-")){
+    public void setTrainSetEndMonth(String year){
+        if(year.equalsIgnoreCase("-pilih-")){
             return;
         }
-        getOwner().getCmbTahunTrainAkhir().setEnabled(true);
+        
         trainSetStartYear = Integer.parseInt(year);
         
+        getOwner().getCmbBulanTrainAkhir().setEnabled(true);
+        getOwner().fillBulanAkhirTrain(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
+    }
+    
+    public void setTrainSetEndYear(String month){
+        if(month.equalsIgnoreCase("-Pilih-")){
+            return;
+        }
+        
+        getOwner().getCmbTahunTrainAkhir().setEnabled(true);
+        trainSetEndMonth = getIntegerBulan(month);
+        
         Calendar temp = Calendar.getInstance();
-        int startYear = Integer.parseInt(year);
+        int startYear = trainSetStartYear;
         temp.setTime(choosen.getEndDate());
         int endYear = temp.get(Calendar.YEAR);
         
@@ -128,37 +156,12 @@ public class LearningAction {
         years.add(0,"-Pilih-");
         getOwner().fillTahunAkhirTrain(new MultiComboBoxModel(years));
     }
-    
-    public void setTrainSetBeginMonth(String year){
-        if(year.equalsIgnoreCase("-Pilih-")){
+   
+    public void setEndYear(String year){
+        if(year.equalsIgnoreCase("-pilih-")){
             return;
         }
         trainSetEndYear = Integer.parseInt(year);
-        getOwner().getCmbBulanTrainAwal().setEnabled(true);
-        getOwner().fillBulanAwalTrain(new MultiComboBoxModel(new ArrayList<String>(Arrays.asList(months))));
-    }
-    
-    public void setTrainSetEndMonth(String month){
-        if(month.equalsIgnoreCase("-pilih-")){
-            return;
-        }
-        
-        int index = trainSetStartMonth = getIntegerBulan(month);
-        getOwner().getCmbBulanTrainAkhir().setEnabled(true);
-        ArrayList<String> temp = new ArrayList<String>();
-        for(int i=index; i<months.length;i++){
-            temp.add(months[i]);
-        }
-        temp.add(0,"-Pilih-");
-        getOwner().fillBulanAkhirTrain(new MultiComboBoxModel(temp));
-    }
-   
-    public void setEndMonth(String month){
-        if(month.equalsIgnoreCase("-pilih-")){
-            return;
-        }
-        int index = trainSetEndMonth = getIntegerBulan(month);
-        
     }
     
     public int getIntegerBulan(String month){
@@ -170,85 +173,95 @@ public class LearningAction {
     }
     
     public void doLearning(){
-        File seedInputWeight = new File("./config/inputweight.txt");
-        File seedBias = new File("./config/bias.txt");
+        File seedFile = new File("./config/seed.txt");
+        File seedList = new File("./config/seedList.txt");
         fetchData();
-        if(seedInputWeight.exists() && seedBias.exists()){
-            myLearningMachine = new LearningMachine(0,false,"sig");
-            learning();
-            LearningMachineContainer temp = LearningMachineContainer.getInstance();
-            LearningDataResult result = CollectionUtils.find(temp.getLearningDataResult(), new Predicate<LearningDataResult>(){
-
-                public boolean evaluate(LearningDataResult t) {
-                    return t.getKodeSaham().equalsIgnoreCase(choosen.getKodeSaham());
+        if(seedFile.exists() && seedList.exists()){
+            try{
+                Scanner scanner = new Scanner(seedFile);
+                int seed = 1;
+                while(scanner.hasNext()){
+                    seed = scanner.nextInt();
                 }
+                confMatrix = new ConfusionMatrix();
+                myLearningMachine = new LearningMachine(0,seed,"sig");
+                learning();
+                LearningMachineContainer container = LearningMachineContainer.getInstance();
+                LearningDataResult result = CollectionUtils.find(container.getLearningDataResult(),
+                    new Predicate<LearningDataResult>(){
+
+                        public boolean evaluate(LearningDataResult t) {
+                            return t.getKodeSaham().equalsIgnoreCase(choosen.getKodeSaham());
+                        }
+
+                    }
+                );
+                if(result != null){
+                    container.getLearningDataResult().remove(result);
+                }
+                container.getLearningDataResult().add(new LearningDataResult(choosen.getKodeSaham(), myLearningMachine,trainSetEndYear));
+                JOptionPane.showMessageDialog(this.owner,"Learning berhasil dilakukan");
+            }
+            catch(FileNotFoundException e){
                 
-            });
-            if(result!=null)
-                temp.getLearningDataResult().remove(result);
-                
-            temp.getLearningDataResult().add(new LearningDataResult(choosen.getKodeSaham(),myLearningMachine,trainSetEndYear));
-            JOptionPane.showMessageDialog(this.owner,"Learning Berhasil dilakukan");
+            }
         }
         else{
-            myLearningMachine = new LearningMachine(0,true,"sig");
             for(int i=0;i<1000;i++){
+                confMatrix = new ConfusionMatrix();
+                myLearningMachine = new LearningMachine(0, i, "sig");
                 learning();
                 getOuput();
-                LearningResults.add(new LearningResult(myLearningMachine.getFirstInputWeight(),myLearningMachine.getFirstBiasofHiddenNeurons(),confMatrix.getAccuracy()));     
+                LearningResults.add(new LearningResult(i,confMatrix.getAccuracy()));
             }
             LearningResult max;
             max = Collections.max(LearningResults,new Comparator<LearningResult>(){
-                
                 public int compare(LearningResult obj1, LearningResult obj2) {
                     return Double.compare(obj1.getAccuracy(), obj2.getAccuracy());
                 }
-                
             });
             
-            String contentInputWeight = "";
-            for(int i=0;i<max.getInputWeight().getData().length;i++){
-                if(i==0){
-                    contentInputWeight += String.format("%f",max.getInputWeight().getData()[i]);
+            LearningMachineContainer container = LearningMachineContainer.getInstance();
+            LearningDataResult result = CollectionUtils.find(container.getLearningDataResult(),
+                new Predicate<LearningDataResult>(){
+
+                    public boolean evaluate(LearningDataResult t) {
+                        return t.getKodeSaham().equalsIgnoreCase(choosen.getKodeSaham());
+                    }
+
                 }
-                else{
-                    contentInputWeight += ","+String.format("%f",max.getInputWeight().getData()[i]);
-                }
+            );
+            if(result != null){
+                container.getLearningDataResult().remove(result);
             }
-            
+            container.getLearningDataResult().add(new LearningDataResult(choosen.getKodeSaham(), myLearningMachine,trainSetEndYear));
+            JOptionPane.showMessageDialog(this.owner,"Learning berhasil dilakukan");
             
             FileWriter fw;
-            try {
-                seedInputWeight.createNewFile();
-                fw = new FileWriter(seedInputWeight);
+            try{
+                seedFile.createNewFile();
+                fw = new FileWriter(seedFile);
                 BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(contentInputWeight);
+                bw.write(String.format("%d", max.getSeed()));
                 bw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LearningAction.class.getName()).log(Level.SEVERE, null, ex);
             }
-      
-            String contentBias = "";
-            for(int i=0;i<max.getBiasOfHiddenNeurons().getData().length;i++){
-                if(i==0){
-                    contentBias += String.format("%f",max.getBiasOfHiddenNeurons().getData()[i]);
-                }
-                else{
-                    contentBias += ","+String.format("%f",max.getBiasOfHiddenNeurons().getData()[i]);
-                }
+            catch(IOException e){
+
             }
-            
-            try {
-                seedBias.createNewFile();
-                fw = new FileWriter(seedBias);
+
+            try{
+                seedList.createNewFile();
+                fw = new FileWriter(seedList);
                 BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(contentBias);
+                for(LearningResult temp : LearningResults){
+                    bw.write(temp.getSeed()+","+temp.getAccuracy());
+                    bw.newLine();
+                }
                 bw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LearningAction.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            JOptionPane.showMessageDialog(this.owner,max.getAccuracy());
+            catch(IOException e){
+
+            }
         }
     }
     
@@ -259,10 +272,14 @@ public class LearningAction {
             public boolean evaluate(Record t) {
                 Calendar temp = Calendar.getInstance();
                 temp.setTime(t.getDate());
-                if(temp.get(Calendar.YEAR)>=trainSetStartYear && temp.get(Calendar.YEAR)<=trainSetEndYear)
-                    if(temp.get(Calendar.MONTH)>= trainSetStartMonth-1 && temp.get(Calendar.MONTH)<=trainSetEndMonth-1)
-                        return true;
-                return false;
+                
+                Calendar startDate = Calendar.getInstance();
+                startDate.set(trainSetStartYear, trainSetStartMonth-1, 0);
+                
+                Calendar endDate = Calendar.getInstance();
+                endDate.set(trainSetEndYear, trainSetEndMonth-1,31);
+                
+                return (temp.compareTo(startDate) >= 0 && temp.compareTo(endDate) <= 0);
             }       
         }));
         train_set.setRecords(temp);
@@ -271,11 +288,14 @@ public class LearningAction {
             public boolean evaluate(Record t) {
                 Calendar temp = Calendar.getInstance();
                 temp.setTime(t.getDate());
-                if(temp.get(Calendar.YEAR)>=trainSetStartYear && temp.get(Calendar.YEAR)<=trainSetEndYear)
-                    if(temp.get(Calendar.MONTH)>= trainSetStartMonth-1 && temp.get(Calendar.MONTH)<=trainSetEndMonth-1)
-                        return true;
-                return false;
-            }       
+                
+                Calendar startDate = Calendar.getInstance();
+                startDate.set(trainSetStartYear, trainSetStartMonth-1, 0);
+                
+                Calendar endDate = Calendar.getInstance();
+                endDate.set(trainSetEndYear, trainSetEndMonth-1,31);
+                
+                return (temp.compareTo(startDate) >= 0 && temp.compareTo(endDate) <= 0);            }       
         }));
         train_set.setNormRecords(temp);
         
