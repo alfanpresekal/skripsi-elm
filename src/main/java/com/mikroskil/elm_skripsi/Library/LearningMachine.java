@@ -158,12 +158,6 @@ public class LearningMachine {
 		DenseMatrix P = new DenseMatrix(NumberofInputNeurons,numTrainData);
 		transT.transpose(T);
 		transP.transpose(P);
-                for(int i=0;i<transP.numRows();i++){
-                    for(int j=0;j<transP.numColumns();j++){
-                        System.out.print(transP.get(i,j)+" ");
-                    }
-                    System.out.println();
-                }
                 
 		if(Elm_Type != 0)	//CLASSIFIER
 		{
