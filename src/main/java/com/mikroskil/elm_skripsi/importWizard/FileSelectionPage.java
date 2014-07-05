@@ -61,6 +61,8 @@ public class FileSelectionPage extends WizardPage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        mainTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -68,10 +70,27 @@ public class FileSelectionPage extends WizardPage {
         txtNamaSaham = new javax.swing.JTextField();
         txtFile = new javax.swing.JTextField();
         btnBrowse = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        mainTable = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+
+        mainTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Date", "Open", "High", "Low", "Close"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        mainTable.setDoubleBuffered(true);
+        jScrollPane1.setViewportView(mainTable);
 
         setBackground(new java.awt.Color(245, 245, 245));
         setPreferredSize(new java.awt.Dimension(680, 390));
@@ -94,25 +113,6 @@ public class FileSelectionPage extends WizardPage {
             }
         });
 
-        mainTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Date", "Open", "High", "Low", "Close"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        mainTable.setDoubleBuffered(true);
-        jScrollPane1.setViewportView(mainTable);
-
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Isi File :");
 
@@ -129,7 +129,6 @@ public class FileSelectionPage extends WizardPage {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -166,9 +165,7 @@ public class FileSelectionPage extends WizardPage {
                     .addComponent(btnBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(251, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
