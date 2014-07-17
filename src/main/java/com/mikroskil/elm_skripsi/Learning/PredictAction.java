@@ -12,10 +12,9 @@ import com.mikroskil.elm_skripsi.model.Record;
 import com.mikroskil.elm_skripsi.model.Result;
 import com.mikroskil.elm_skripsi.model.Share;
 import com.mikroskil.elm_skripsi.model.ShareContainer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
@@ -33,7 +32,7 @@ public class PredictAction {
     ArrayList<Result> showResult = new ArrayList<Result>();
     ArrayList<Result> realResult = new ArrayList<Result>();
     private ShareContainer shareContainer = new ShareContainer();
-    private Share choosen,test_set = new Share("test_set","");
+    private Share choosen,test_set = new Share("test_set",""),train_set = new Share("train_set","");
     double[] results,results_denorm;
     private LearningMachine myLearningMachine;
     private Predict owner;
@@ -54,30 +53,36 @@ public class PredictAction {
     
     public void setChoosen(final String kode){
         if(kode.equalsIgnoreCase("-pilih-"))return;
-        LearningMachineContainer temp = LearningMachineContainer.getInstance(); 
-        LearningDataResult isExists = CollectionUtils.find(
-                temp.getLearningDataResult(), 
-                new Predicate<LearningDataResult>(){
-                        public boolean evaluate(LearningDataResult t){
-                            return t.getKodeSaham().equalsIgnoreCase(kode);
-                        }
-                }
-        );
-        if(isExists!=null){
-            myLearningMachine = isExists.getLearningMachine();
-            choosen = CollectionUtils.find(shareContainer.getShare(), new Predicate<Share>(){
-               public boolean evaluate(Share t){
-                   return t.getKodeSaham().equalsIgnoreCase(kode);
-
-               } 
-            });
-            choosen.readRecords(Share.REAL);
-            choosen.readRecords(Share.NORM);
+        choosen = CollectionUtils.find(shareContainer.getShare(), new Predicate<Share>(){
+           public boolean evaluate(Share t){
+               return t.getKodeSaham().equalsIgnoreCase(kode);
+                       
+           } 
+        });
+        choosen.readRecords(Share.REAL);
+        Record temp = choosen.getRecords().get(choosen.getRecords().size()-1);
+        Record newOne;
+        try {
+            newOne = new Record(temp.toArray());
+            choosen.getRecords().add(newOne);
+            choosen.countEMA5();
+            choosen.countEMA20();
+            choosen.countEMA10();
             choosen.setHighestLowest();
+            choosen.setNormalizedData();
+            ArrayList<Record> temp_train;
+            ArrayList<Record> temp_test;
+            temp_train = new ArrayList<Record>(choosen.getNormRecords().subList(0,choosen.getNormRecords().size()-1));
+            temp_test = new ArrayList<Record>(choosen.getNormRecords().subList(choosen.getNormRecords().size()-1,choosen.getNormRecords().size()));
+            train_set.setNormRecords(temp_train);
+            test_set.setNormRecords(temp_test);
+            myLearningMachine = new LearningMachine(0,0, "sig");
+            myLearningMachine.train(train_set.getNormRecords());
+            doPredict();
+        } catch (Exception ex) {
+            Logger.getLogger(PredictAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        else{
-            JOptionPane.showMessageDialog(this.owner,"Kode Saham Belum di learning");
-        }
+       
     }
     
     public void doPredict(){

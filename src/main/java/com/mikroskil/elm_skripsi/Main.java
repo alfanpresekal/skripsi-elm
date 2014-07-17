@@ -9,6 +9,7 @@ package com.mikroskil.elm_skripsi;
 import com.mikroskil.elm_skripsi.Learning.LearningPage;
 import com.mikroskil.elm_skripsi.Learning.Predict;
 import com.mikroskil.elm_skripsi.Learning.TestingPage;
+import com.mikroskil.elm_skripsi.Library.Inverse;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendFinishPage;
 import com.mikroskil.elm_skripsi.appendWizard.DataAppendPage;
 import com.mikroskil.elm_skripsi.delete.DeleteDialog;
@@ -33,6 +34,47 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+//        double[][] values = new double[][]{
+//            {0.29,0.32,0.16,0.52,0.74,0.11},
+//            {0.04,0.11,0.35,0.80,0.48,0.53}
+//        };
+//        double[][] temp_trans = new double[][]{
+//            {0.991,0.952,0.952,0.975,0.993,0.994},
+//            {0.991,1.000,1.000,0.983,1.000,1.000}
+//        };
+//        DenseMatrix A = new DenseMatrix(values);
+//        DenseMatrix B = new DenseMatrix(temp_trans);
+//        DenseMatrix C = new DenseMatrix(2,2);
+//        A.mult(B, C);
+//        for(int i=0;i<C.numRows();i++){
+//            for(int j=0;j<C.numColumns();j++){
+//                System.out.print(C.get(i, j)+" ");
+//            }
+//            System.out.println();
+//        }
+////        DenseMatrix transT = new DenseMatrix(temp_trans);
+////        DenseMatrix temp = new DenseMatrix(values);
+////        Inverse inverse = new Inverse(temp);
+////        try {
+////            DenseMatrix result = inverse.getMPInverse();
+////            for(int i=0;i<result.numRows();i++){
+////                for(int j=0;j<result.numColumns();j++){
+////                    System.out.print(result.get(i, j)+" ");
+////                }
+////                System.out.println();
+////            }
+////            DenseMatrix outputWeight = new DenseMatrix(2,1);
+////            result.mult(transT,outputWeight);
+////            for(int i=0;i<outputWeight.numRows();i++){
+////                for(int j=0;j<outputWeight.numColumns();j++){
+////                    System.out.print(outputWeight.get(i, j)+" ");
+////                }
+////                System.out.println();
+////            }
+////            
+////        } catch (NotConvergedException ex) {
+////           //Logger.getLogger(com.mikroskil.elm_skripsi.Library.Main.class.getName()).log(Level.SEVERE, null, ex);
+////        }
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
@@ -54,6 +96,7 @@ public class Main extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         mnuTesting = new javax.swing.JMenuItem();
+        menuPrediksi = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -116,6 +159,14 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu2.add(mnuTesting);
 
+        menuPrediksi.setText("Prediksi");
+        menuPrediksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuPrediksiActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuPrediksi);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -168,6 +219,11 @@ public class Main extends javax.swing.JFrame {
         main.show();
     }//GEN-LAST:event_mnuTestingActionPerformed
 
+    private void menuPrediksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPrediksiActionPerformed
+        Predict main = new Predict(this,true);
+        main.show();
+    }//GEN-LAST:event_menuPrediksiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -219,6 +275,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem menuPrediksi;
     private javax.swing.JMenuItem mnuAppendData;
     private javax.swing.JMenuItem mnuDeleteData;
     private javax.swing.JMenuItem mnuExit;
