@@ -447,7 +447,8 @@ public class LearningMachine {
 		ttestT.transpose(testT);
 		ttestP.transpose(testP);
 		//test_set.transpose(testP);
-
+                
+		long start_time_test = System.currentTimeMillis();
 		DenseMatrix tempH_test = new DenseMatrix(NumberofHiddenNeurons, numTestData);
 		InputWeight.mult(testP, tempH_test);
 		DenseMatrix BiasMatrix2 = new DenseMatrix(NumberofHiddenNeurons, numTestData);
@@ -493,7 +494,9 @@ public class LearningMachine {
 		H_test.transpose(transH_test);
 		DenseMatrix Yout = new DenseMatrix(numTestData,NumberofOutputNeurons);
 		transH_test.mult(OutputWeight,Yout);
-
+                
+                long end_time_test = System.currentTimeMillis();
+		TestingTime = (end_time_test - start_time_test)*1.0f/1000;
 		//DenseMatrix testY = new DenseMatrix(NumberofOutputNeurons,numTestData);
 		//Yout.transpose(testY);
 

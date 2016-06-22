@@ -72,8 +72,8 @@ public class PredictAction {
             choosen.setNormalizedData();
             ArrayList<Record> temp_train;
             ArrayList<Record> temp_test;
-            temp_train = new ArrayList<Record>(choosen.getNormRecords().subList(0,choosen.getNormRecords().size()-1));
-            temp_test = new ArrayList<Record>(choosen.getNormRecords().subList(choosen.getNormRecords().size()-1,choosen.getNormRecords().size()));
+            temp_train = new ArrayList<Record>(choosen.getNormRecords().subList(0,choosen.getNormRecords().size()-2));
+            temp_test = new ArrayList<Record>(choosen.getNormRecords().subList(choosen.getNormRecords().size()-2,choosen.getNormRecords().size()));
             train_set.setNormRecords(temp_train);
             test_set.setNormRecords(temp_test);
             myLearningMachine = new LearningMachine(0,0, "sig");

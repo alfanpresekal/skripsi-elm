@@ -172,6 +172,35 @@ public class LearningAction {
         return 0;
     }
     
+    public void setTrainingTime(float time){
+        ((LearningPage)getOwner()).setLabelWaktu(getTimeRender(time));
+    }
+    
+    public String getTimeRender(float time){
+        int index=0;
+        if(time>=60){
+            while(true){
+                float temp = time/60;
+                if(temp>=1){
+                    time = temp;
+                    index++;
+                }
+                else
+                    break;
+            }
+        }
+        switch(index){
+            case 0 :
+                return String.format("%.2f "+((time==1)?"Second":"Seconds"),time);
+            case 1 :
+                return String.format("%.2f "+((time==1)?"Minute":"Minutes"),time);
+            case 2 :
+                return String.format("%.2f "+((time==1)?"Hour":"Hours"),time);
+            default :
+                return "Invalid";
+        }
+    }
+    
     public void doLearning(){
         File seedFile = new File("./config/seed.txt");
         File seedList = new File("./config/seedList.txt");
@@ -186,6 +215,7 @@ public class LearningAction {
                 confMatrix = new ConfusionMatrix();
                 myLearningMachine = new LearningMachine(0,seed,"sig");
                 learning();
+                setTrainingTime(myLearningMachine.getTrainingTime());
                 LearningMachineContainer container = LearningMachineContainer.getInstance();
                 LearningDataResult result = CollectionUtils.find(container.getLearningDataResult(),
                     new Predicate<LearningDataResult>(){

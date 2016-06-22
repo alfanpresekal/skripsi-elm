@@ -268,6 +268,23 @@ public class Share {
         }
     }
     
+    public void countEMAN(int n){
+        double movingAverage = 0;
+        for(int i=0;i<getRecords().size();i++){
+            if(i<n-1){
+                movingAverage+=getRecords().get(i).getClose();
+                getRecords().get(i).setEma20(0);
+                if(i==n-1)
+                    movingAverage/=19;
+            }
+            else{
+                double CONST = (2.0/(1+n));
+                movingAverage = (CONST*(getRecords().get(i).getClose()-movingAverage))+movingAverage;
+                getRecords().get(i).setEma20(movingAverage);
+            }
+        }
+    }
+    
     public int combineRecord(ArrayList<Record> newRecords){
         int index;
         index=getRecords().size();
